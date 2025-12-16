@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Theme based on your UI_Settings table */
+  --primary-color: #1b5e20; /* Dark Green */
+  --secondary-color: #e8f5e9; /* Light Green Background */
+  --text-main: #333333;
+  --text-light: #ffffff;
+}
+
+body {
+  background-color: var(--secondary-color);
+  color: var(--text-main);
+}
