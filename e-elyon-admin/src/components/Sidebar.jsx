@@ -7,9 +7,22 @@ const LOGO_URL = "https://wbvmnybkjtzvtotxqzza.supabase.co/storage/v1/object/pub
 const Sidebar = ({ isOpen, toggleSidebar, activePage, setActivePage }) => {
   
   // LOGOUT FUNCTION
+  // LOGOUT FUNCTION
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    // App.jsx will automatically detect the change and switch to the Login Screen
+    try {
+      // Attempt to sign out from Supabase
+      const { error } = await supabase.auth.signOut();
+      if (error) console.warn("Server-side sign out failed (likely already logged out):", error);
+    } catch (err) {
+      console.error("Unexpected error during sign out:", err);
+    } finally {
+      // ⚠️ FORCE CLEANUP: Manually remove the auth token to ensure you aren't stuck
+      // This key uses your specific project ID found in supabaseClient.js
+      localStorage.removeItem('sb-wbvmnybkjtzvtotxqzza-auth-token'); 
+      
+      // Force a page reload to reset all application state and return to Login
+      window.location.reload();
+    }
   };
 
   const menuItems = [
