@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { 
   Home, Users, Database, FileText, Settings, Menu, 
   ChevronLeft, LogOut, UserCog, DollarSign, Briefcase, 
-  ClipboardList, PieChart 
+  ClipboardList, PieChart, Users2, Calendar, MessageSquare 
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
@@ -23,7 +23,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     }
   };
 
-  // UPDATED: menuConfig with the exact choices from your images
   const menuConfig = {
     'admin': [
       { path: '/admin/dashboard', name: 'Home', icon: <Home size={20} /> },
@@ -32,10 +31,16 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       { path: '/admin/audit', name: 'Audit Trail', icon: <FileText size={20} /> },
       { path: '/admin/settings', name: 'System Configuration', icon: <Settings size={20} /> },
     ],
+    // UPDATED: Bishop menu items exactly as they appear in the UI image
     'bishop': [
-      { path: '/admin/dashboard', name: 'Home', icon: <Home size={20} /> },
-      { path: '/admin/users', name: 'User Management', icon: <Users size={20} /> },
-      { path: '/admin/audit', name: 'Audit Trail', icon: <FileText size={20} /> },
+      { path: '/bishop/dashboard', name: 'Home', icon: <Home size={20} /> },
+      { path: '/bishop/roles', name: 'User and Role Management', icon: <UserCog size={20} /> },
+      { path: '/bishop/membership', name: 'Attendance and Membership', icon: <Users2 size={20} /> },
+      { path: '/bishop/events', name: 'Activity and Events', icon: <Calendar size={20} /> },
+      { path: '/bishop/finance', name: 'Finance Oversight', icon: <DollarSign size={20} /> },
+      { path: '/bishop/tasks', name: 'Task and Role Assignment Control', icon: <Briefcase size={20} /> },
+      { path: '/bishop/analytics', name: 'Reports and Analytics', icon: <PieChart size={20} /> },
+      { path: '/bishop/counseling', name: 'Counseling/Prayer Request', icon: <MessageSquare size={20} /> },
     ],
     'finance': [
       { path: '/finance/dashboard', name: 'Home', icon: <Home size={20} /> },
@@ -112,7 +117,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       <div className="p-4 border-t border-green-200 space-y-2 mb-2">
         <div className={`flex items-center p-3 rounded-lg cursor-pointer text-green-900 hover:bg-green-200 transition-colors ${!isOpen ? "justify-center" : "gap-x-4"}`}>
             <UserCog size={20} />
-            <span className={`${!isOpen && "hidden"} font-medium text-sm`}>Account Settings</span>
+            <span className={`${!isOpen && "hidden"} font-medium text-sm`}>Account Options</span>
         </div>
         
         <div 
@@ -126,5 +131,5 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     </div>
   );
 };
-
+  
 export default Sidebar;

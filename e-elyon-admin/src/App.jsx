@@ -1,6 +1,5 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
 import { useUser } from './context/UserContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -10,26 +9,30 @@ import Login from './components/Login';
 
 // Pages
 import AdminDashboard from './pages/Admin/Dashboard';
+import Backup from './pages/Admin/Backup';
+import AuditTrail from './pages/Admin/AuditTrail';
+import Settings from './pages/Admin/Settings';
 import UserManagement from './pages/Admin/UserManagement';
 import StaffDashboard from './pages/Staff/StaffDashboard';
 import FinanceDashboard from './pages/Finance/FinanceDashboard';
 import BishopDashboard from './pages/Bishop/BishopDashboard';
+import FundManagement from './pages/Finance/FundManagement';
+import Stipends from './pages/Finance/Stipends';
+import FinanceTasks from './pages/Finance/FinanceTasks';
+import FinanceReports from './pages/Finance/FinanceReports';
+import BishopRoles from './pages/Bishop/Roles';
+import BishopFinance from './pages/Bishop/BishopFinance';
+import BishopTasks from './pages/Bishop/BishopTasks';
+import BishopAnalytics from './pages/Bishop/BishopAnalytics';
+import Membership from './pages/Bishop/Membership';
+import Events from './pages/Bishop/Events';
+import Counseling from './pages/Bishop/Counseling';
 
 function App() {
-  const { session, loading, userRole, roleLoading } = useUser();
+  const { session, userRole } = useUser();
   const [sidebarOpen, setSidebarOpen] = React.useState(true);
 
-  // App loading (session)
-  if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin mr-2" />
-        Loading E-Elyon...
-      </div>
-    );
-  }
-
-  // Not logged in
+  // If there is no session, show Login page immediately
   if (!session) {
     return <Login />;
   }
@@ -44,13 +47,11 @@ function App() {
         </div>
 
         <Routes>
-          {/* ROOT REDIRECT — FIXED */}
+          {/* Default redirect based on role when visiting "/" */}
           <Route
             path="/"
             element={
-              roleLoading ? (
-                <div className="p-10">Loading role...</div>
-              ) : userRole === 'admin' ? (
+              userRole === 'admin' ? (
                 <Navigate to="/admin/dashboard" replace />
               ) : userRole === 'bishop' ? (
                 <Navigate to="/bishop/dashboard" replace />
@@ -63,52 +64,29 @@ function App() {
               )
             }
           />
-          {/* BISHOP */}
-          <Route
-            path="/bishop/dashboard"
-            element={<ProtectedRoute element={<BishopDashboard />} allowedRoles={['bishop']} />}
-          />
+          
+          <Route path="/bishop/dashboard" element={<ProtectedRoute element={<BishopDashboard />} allowedRoles={['bishop']} />} />
+          <Route path="/admin/dashboard" element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={['admin']} />} />
+          <Route path="/admin/users" element={<ProtectedRoute element={<UserManagement />} allowedRoles={['admin']} />} />
+          <Route path="/staff/dashboard" element={<ProtectedRoute element={<StaffDashboard />} allowedRoles={['staff']} />} />
+          <Route path="/finance/dashboard" element={<ProtectedRoute element={<FinanceDashboard />} allowedRoles={['finance']} />} />
+          <Route path="/admin/backup" element={<ProtectedRoute element={<Backup />} allowedRoles={['admin']} />} />
+          <Route path="/admin/audit" element={<ProtectedRoute element={<AuditTrail />} allowedRoles={['admin']} />} />
+          <Route path="/admin/settings" element={<ProtectedRoute element={<Settings />} allowedRoles={['admin']} />} />
+          <Route path="/finance/funds" element={<ProtectedRoute element={<FundManagement />} allowedRoles={['finance']} />} />
+          <Route path="/finance/stipends" element={<ProtectedRoute element={<Stipends />} allowedRoles={['finance']} />} />
+          <Route path="/finance/tasks" element={<ProtectedRoute element={<FinanceTasks />} allowedRoles={['finance']} />} />
+          <Route path="/finance/reports" element={<ProtectedRoute element={<FinanceReports />} allowedRoles={['finance']} />} />
+          <Route path="/bishop/roles" element={<ProtectedRoute element={<BishopRoles />} allowedRoles={['bishop']} />} />
+          <Route path="/bishop/finance" element={<ProtectedRoute element={<BishopFinance />} allowedRoles={['bishop']} />} />
+          <Route path="/bishop/tasks" element={<ProtectedRoute element={<BishopTasks />} allowedRoles={['bishop']} />} />
+          <Route path="/bishop/analytics" element={<ProtectedRoute element={<BishopAnalytics />} allowedRoles={['bishop']} />} />
+          <Route path="/bishop/membership" element={<ProtectedRoute element={<Membership />} allowedRoles={['bishop']} />} />
+          <Route path="/bishop/events" element={<ProtectedRoute element={<Events />} allowedRoles={['bishop']} />} />
+          <Route path="/bishop/counseling" element={<ProtectedRoute element={<Counseling />} allowedRoles={['bishop']} />} />
 
-          {/* ADMIN */}
-          <Route
-            path="/admin/dashboard"
-            element={<ProtectedRoute element={<AdminDashboard />} allowedRoles={['admin']} />}
-          />
-          <Route
-            path="/admin/users"
-            element={<ProtectedRoute element={<UserManagement />} allowedRoles={['admin']} />}
-          />
-
-          {/* STAFF */}
-          <Route
-            path="/staff/dashboard"
-            element={<ProtectedRoute element={<StaffDashboard />} allowedRoles={['staff']} />}
-          />
-
-          {/* FINANCE */}
-          <Route
-            path="/finance/dashboard"
-            element={<ProtectedRoute element={<FinanceDashboard />} allowedRoles={['finance']} />}
-          />
-
-          {/* SYSTEM */}
-          <Route
-            path="/unauthorized"
-            element={
-              <div className="p-10 text-center">
-                <h1 className="text-3xl font-bold text-red-700">403 - Access Denied</h1>
-              </div>
-            }
-          />
-
-          <Route
-            path="*"
-            element={
-              <div className="p-10 text-center">
-                <h1 className="text-3xl font-bold">404 - Page Not Found</h1>
-              </div>
-            }
-          />
+          <Route path="/unauthorized" element={<div className="p-10 text-center"><h1 className="text-3xl font-bold text-red-700">403 - Access Denied</h1></div>} />
+          <Route path="*" element={<div className="p-10 text-center"><h1 className="text-3xl font-bold">404 - Page Not Found</h1></div>} />
         </Routes>
       </div>
     </div>
