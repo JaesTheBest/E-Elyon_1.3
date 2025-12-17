@@ -13,6 +13,7 @@ import AdminDashboard from './pages/Admin/Dashboard';
 import UserManagement from './pages/Admin/UserManagement';
 import StaffDashboard from './pages/Staff/StaffDashboard';
 import FinanceDashboard from './pages/Finance/FinanceDashboard';
+import BishopDashboard from './pages/Bishop/BishopDashboard';
 
 function App() {
   const { session, loading, userRole, roleLoading } = useUser();
@@ -51,6 +52,8 @@ function App() {
                 <div className="p-10">Loading role...</div>
               ) : userRole === 'admin' ? (
                 <Navigate to="/admin/dashboard" replace />
+              ) : userRole === 'bishop' ? (
+                <Navigate to="/bishop/dashboard" replace />
               ) : userRole === 'staff' ? (
                 <Navigate to="/staff/dashboard" replace />
               ) : userRole === 'finance' ? (
@@ -59,6 +62,11 @@ function App() {
                 <Navigate to="/unauthorized" replace />
               )
             }
+          />
+          {/* BISHOP */}
+          <Route
+            path="/bishop/dashboard"
+            element={<ProtectedRoute element={<BishopDashboard />} allowedRoles={['bishop']} />}
           />
 
           {/* ADMIN */}
