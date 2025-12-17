@@ -1,16 +1,61 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // <-- Import useNavigate
+import { useUser } from '../context/UserContext'; // <-- Import UserContext
 
 // 👇 YOUR SPECIFIC LOGO URL
 const LOGO_URL = "https://wbvmnybkjtzvtotxqzza.supabase.co/storage/v1/object/public/assets/logos/logo_1765823120776.png";
 
-const Login = ({ onLoginSuccess }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate(); // <-- Initialize useNavigate
+  const { setUserRole } = useUser(); // <-- Get context helper
+
+  // Helper function to get role after successful login
+  const fetchAndRedirect = async (authUserId) => {
+  const { data: userData, error: fetchError } = await supabase
+    .from('users')
+    .select('role')
+    .eq('auth_user_id', authUserId)
+    .single();
+
+  if (fetchError || !userData) {
+    throw new Error(
+      `Could not determine user role. Please contact support. (${fetchError?.message || 'No role found'})`
+    );
+  }
+
+  const userRole = userData.role?.trim().toLowerCase();
+setUserRole(userRole);
+
+let redirectPath;
+switch (userRole) {
+  case 'admin':
+  case 'bishop':
+    redirectPath = '/admin/dashboard';
+    break;
+  case 'staff':
+    redirectPath = '/staff/dashboard';
+    break;
+  case 'finance':
+    redirectPath = '/finance/dashboard';
+    break;
+  default:
+    console.error('Unhandled role:', userRole);
+    await supabase.auth.signOut();
+    throw new Error(`Access Denied. Role '${userRole}' not permitted.`);
+}
+
+navigate(redirectPath, { replace: true });
+
+};
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -24,16 +69,21 @@ const Login = ({ onLoginSuccess }) => {
       });
 
       if (error) throw error;
-      onLoginSuccess(data.session);
+      
+      // Instead of calling onLoginSuccess, we fetch the role and redirect directly
+      await fetchAndRedirect(data.user.id); 
 
     } catch (error) {
       setError(error.message);
+      // Ensure session is cleared if redirection failed or role check failed
+      await supabase.auth.signOut(); 
     } finally {
       setLoading(false);
     }
   };
 
   return (
+    // ... (rest of the component structure remains the same)
     <div className="flex h-screen w-full bg-white overflow-hidden">
       
       {/* ==============================

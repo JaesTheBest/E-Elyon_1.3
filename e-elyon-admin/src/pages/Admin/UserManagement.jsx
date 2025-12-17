@@ -1,9 +1,12 @@
+// File: E-Elyon_1.3-main/e-elyon-admin/src/pages/Admin/UserManagement.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Plus, Search, Edit2, Trash2, Shield, X, Save, Calendar, Loader2, Mail, CheckCircle, AlertTriangle } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
-import { supabase, supabaseUrl, supabaseKey } from '../supabaseClient'; 
+import { supabase, supabaseUrl, supabaseKey } from '../../supabaseClient'; // <-- Adjusted import path
 
 const UserManagement = () => {
+  // ... (rest of the component logic remains the same)
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -20,7 +23,8 @@ const UserManagement = () => {
     firstName: '',
     lastName: '',
     email: '',
-    role: 'Staff',
+    // Ensure 'Admin' role here matches the case in the database/login logic
+    role: 'Staff', 
     accessStart: '',
     accessEnd: ''
   });
